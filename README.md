@@ -16,3 +16,6 @@ comy and open ma3 demo show
 start plugi 
 
 ALL WORK! :D
+
+
+chect osc in/out interface is loop local 127.0.0.1
