@@ -18,7 +18,7 @@ color_executor_empty = 0;
 color_executor_off = 9;
 color_executor_on = 21;
 color_logo = 60;
-brightness = 1;     //brightness 0-6
+brightness = 6;     //brightness 0-6
 executor_fx = 7;    //fx 7-15
 fader_indicator = 1;//o = off, 1 = on
 
