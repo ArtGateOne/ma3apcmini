@@ -1,4 +1,4 @@
-//ma3apcminimk2 v1.0.0 by ArtGateOne
+//ma3apcminimk2 v1.0.1 by ArtGateOne
 
 var easymidi = require('easymidi');
 var osc = require("osc")
@@ -215,7 +215,7 @@ input.on('cc', function (msg) {//Fader send OSC
     udpPort.send({ address: "/Fader206", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
   }
   else if (msg.controller == 54) {
-    F208 = msg.value;
+    F207 = msg.value;
     udpPort.send({ address: "/Fader207", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
   }
   else if (msg.controller == 55) {
