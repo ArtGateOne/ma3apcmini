@@ -1,5 +1,5 @@
 # ma3apcmini
-apcmini control ma3 osc midi
+Akai apc mini mk2  control MA3 via OSC
 
 Download and install NodeJS version 14.17 from https://nodejs.org/dist/v14.17.0/node-v14.17.0-x64.msi
 
@@ -11,11 +11,13 @@ change default tool to open .js file to node.exe (from nodejs )
 
 Run code double click
 
-comy and open ma3 demo show
+copy and load my  ma3 demo show
 
-start plugi 
+start plugin
 
 ALL WORK! :D
 
 
 chect osc in/out interface is loop local 127.0.0.1
+
+chect - session is start
