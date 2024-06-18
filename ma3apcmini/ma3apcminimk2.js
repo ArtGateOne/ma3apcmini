@@ -1,4 +1,4 @@
-//ma3apcminimk2 v1.0.1 by ArtGateOne
+//ma3apcminimk2 v1.0.2 by ArtGateOne
 
 var easymidi = require('easymidi');
 var osc = require("osc")
@@ -44,6 +44,7 @@ var GrandMaster = 100;
 
 var page = 1;
 var BO = 0;
+var clear = 0;
 
 //MIDI
 //display info
@@ -101,8 +102,13 @@ var udpPort = new osc.UDPPort({
 // Listen for incoming OSC messages.
 udpPort.on("message", function (oscMsg, timeTag, info) {
 
+  if (clear == 0){
+    midiclear();
+    clear = 1;
+  }
+
   if (oscMsg.address == "/Page") {
-    console.log("Page");
+    change_page(oscMsg.args[0].value);
   }
   /*
   else if (oscMsg.address == "/Fader201") { light_fader(16, oscMsg.args[0].value); }
@@ -505,6 +511,12 @@ function light_page_button(note) {
   output.send('noteon', { note: page + 111, velocity: 0, channel: 0 });
   output.send('noteon', { note: note, velocity: 1, channel: 0 });
   page = note - 111;
+}
+
+function change_page(page_new) {
+  output.send('noteon', { note: page + 111, velocity: 0, channel: 0 });
+  output.send('noteon', { note: page_new + 111, velocity: 1, channel: 0 });
+  page = page_new;
 }
 
 
