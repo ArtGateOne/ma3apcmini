@@ -1,4 +1,4 @@
-//ma3apcminimk2color v1.0.0 by ArtGateOne
+//ma3apcminimk2color v1.0.5 by ArtGateOne
 
 var easymidi = require('easymidi');
 var osc = require('osc')
@@ -32,14 +32,8 @@ var command_6 = "Page 6"; //drum
 var command_7 = "Page 7"; //note
 var command_8 = "Page 8"; //stop all clips
 
-var F201 = 0;
-var F202 = 0;
-var F203 = 0;
-var F204 = 0;
-var F205 = 0;
-var F206 = 0;
-var F207 = 0;
-var F208 = 0;
+var Fader = [0, 0, 0, 0, 0, 0, 0, 0];
+
 var GrandMaster = 100;
 
 var page = 1;
@@ -101,10 +95,10 @@ var udpPort = new osc.UDPPort({
 
 // Listen for incoming OSC messages.
 udpPort.on("message", function (oscMsg, timeTag, info) {
-  
+
   //console.log(oscMsg);
 
-  if (clear == 0){
+  if (clear == 0) {
     midiclear();
     clear = 1;
   }
@@ -197,38 +191,10 @@ udpPort.on("ready", function () {
 
 input.on('cc', function (msg) {//Fader send OSC
 
-
-  if (msg.controller == 48) {
-    F201 = msg.value;
-    udpPort.send({ address: "/Fader201", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 49) {
-    F202 = msg.value;
-    udpPort.send({ address: "/Fader202", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 50) {
-    F203 = msg.value;
-    udpPort.send({ address: "/Fader203", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 51) {
-    F204 = msg.value;
-    udpPort.send({ address: "/Fader204", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 52) {
-    F205 = msg.value;
-    udpPort.send({ address: "/Fader205", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 53) {
-    F206 = msg.value;
-    udpPort.send({ address: "/Fader206", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 54) {
-    F207 = msg.value;
-    udpPort.send({ address: "/Fader207", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
-  }
-  else if (msg.controller == 55) {
-    F208 = msg.value;
-    udpPort.send({ address: "/Fader208", args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
+  if (msg.controller >= 48 && msg.controller <= 55) {
+    var OSCaddress = "/Fader20" + (msg.controller - 47);
+    Fader[msg.controller - 48] = msg.value;
+    udpPort.send({ address: OSCaddress, args: [{ type: "i", value: msg.value }] }, remoteip, remoteport);
   }
   else if (msg.controller == 56) {//Grand Master Fader
     GrandMaster = msg.value * 0.8;
@@ -267,9 +233,10 @@ input.on('noteon', function (msg) {//recive midi keys and send to osc
   else if (msg.note >= 56 && msg.note <= 63) {
     udpPort.send({ address: "/Key" + (msg.note + 120), args: [{ type: "i", value: 1 }] }, remoteip, remoteport);
   }
-
-
-  //Right side buttons
+  else if (msg.note >= 100 && msg.note <= 107) {
+    udpPort.send({ address: "/Fader" + (msg.note + 101), args: [{ type: "i", value: 127 }] }, remoteip, remoteport);
+    output.send('noteon', { note: msg.note, velocity: msg.velocity, channel: 0 });
+  }
   else if (msg.note == 112) {
     light_page_button(msg.note);
     udpPort.send({ address: "/cmd", args: [{ type: "s", value: command_1 }] }, remoteip, remoteport);
@@ -334,6 +301,10 @@ input.on('noteoff', function (msg) {//recive midi keys and send to osc
   else if (msg.note >= 56 && msg.note <= 63) {
     udpPort.send({ address: "/Key" + (msg.note + 120), args: [{ type: "i", value: 0 }] }, remoteip, remoteport);
   }
+  else if (msg.note >= 100 && msg.note <= 107) {
+    udpPort.send({ address: "/Fader" + (msg.note + 101), args: [{ type: "i", value: Fader[msg.note - 100] }] }, remoteip, remoteport);
+    output.send('noteon', { note: msg.note, velocity: msg.velocity, channel: 0 });
+  }
   else if (msg.note == 122) {//BO
     BO = 0;
     udpPort.send({ address: "/cmd", args: [{ type: "s", value: "Master 2.1 At " + (GrandMaster) }] }, remoteip, remoteport);
@@ -351,7 +322,7 @@ function midiclear() {
 
 function light_executor(note, status, color) {
   channel = brightness;
-  
+
   if (color == "#000000") {
     if (status == 1) {
       velocity = color_executor_on;
@@ -363,10 +334,10 @@ function light_executor(note, status, color) {
     }
 
   } else {
-  if (status == 1) {
-    channel = executor_fx;
-  }
-  velocity = getClosestVelocity(color);
+    if (status == 1) {
+      channel = executor_fx;
+    }
+    velocity = getClosestVelocity(color);
   }
 
 
