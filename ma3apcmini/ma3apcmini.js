@@ -232,7 +232,7 @@ input.on('noteon', function (msg) {//recive midi keys and send to osc
     }, remoteip, remoteport);
   }
 
-  if (msg.note >= 16 && msg.note <= 23) {
+  else if (msg.note >= 16 && msg.note <= 23) {
     //do nothing
   }
 
@@ -371,7 +371,7 @@ input.on('noteoff', function (msg) {//recive midi keys and send to osc
     }, remoteip, remoteport);
   }
 
-  if (msg.note >= 16 && msg.note <= 23) {
+  else if (msg.note >= 16 && msg.note <= 23) {
     //do nothing
   }
 

@@ -211,7 +211,9 @@ input.on('cc', function (msg) {//Fader send OSC
 
 input.on('noteon', function (msg) {//recive midi keys and send to osc
 
-  if (msg.note >= 0 && msg.note <= 7) { udpPort.send({ address: "/Key" + (msg.note + 101), args: [{ type: "i", value: 1 }] }, remoteip, remoteport); }
+  if (msg.note >= 0 && msg.note <= 7) {
+    udpPort.send({ address: "/Key" + (msg.note + 101), args: [{ type: "i", value: 1 }] }, remoteip, remoteport);
+  }
   else if (msg.note >= 8 && msg.note <= 15) {
     udpPort.send({ address: "/Key" + (msg.note + 193), args: [{ type: "i", value: 1 }] }, remoteip, remoteport);
   }
@@ -283,7 +285,7 @@ input.on('noteoff', function (msg) {//recive midi keys and send to osc
   else if (msg.note >= 8 && msg.note <= 15) {
     udpPort.send({ address: "/Key" + (msg.note + 193), args: [{ type: "i", value: 0 }] }, remoteip, remoteport);
   }
-  if (msg.note >= 16 && msg.note <= 23) {
+  else if (msg.note >= 16 && msg.note <= 23) {
     //do nothing
   }
   else if (msg.note >= 24 && msg.note <= 31) {
